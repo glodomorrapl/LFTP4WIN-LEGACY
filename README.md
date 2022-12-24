@@ -6,4 +6,5 @@ What's changed:
 - fixed support for 32-bit Windows due to cygwin sunsetting their 32-bit Windows support, removed support for 64-bit Windows
 
 What's planned to change:
+- remove the updater (since 32-bit cygwin packages will no longer be updated anyway)
 - option to use curl instead of bitsadmin, which struggles with HTTPS transfers on older systems (or is outright non-functional/removed on modified versions of Windows)
