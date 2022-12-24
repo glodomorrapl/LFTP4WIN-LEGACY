@@ -43,11 +43,8 @@ set CYGWIN_PACKAGES=wget,ca-certificates,gnupg,bsdtar,bash-completion,curl,lftp,
 :: Install the LFTP4WIN Skeleton files to use lftp via WinSCP and Conemu. Installs Conemu, kitty, WinSCP, notepad++ and makes a few minor modifications to the default cygin installation.
 set INSTALL_LFTP4WIN_CORE=yes
 
-:: change the URL to the closest mirror https://cygwin.com/mirrors.html
-set CYGWIN_MIRROR=https://www.mirrorservice.org/sites/sourceware.org/pub/cygwin/
-
-:: one of: auto,64,32 - specifies if 32 or 64 bit version should be installed or automatically detected based on current OS architecture
-set CYGWIN_ARCH=auto
+:: This is a mirror provided by the Cygwin Time Machine project, do not change unless you know what you're doing
+set CYGWIN_MIRROR=http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/circa/2022/11/23/063457
 
 :: add more path if required, but at the cost of runtime performance (e.g. slower forks)
 set CYGWIN_PATH=""
@@ -80,25 +77,8 @@ if not exist "%INSTALL_TEMP%" (
     md "%INSTALL_TEMP%"
 )
 
-:: https://blogs.msdn.microsoft.com/david.wang/2006/03/27/howto-detect-process-bitness/
-if "%CYGWIN_ARCH%" == "auto" (
-    if "%PROCESSOR_ARCHITECTURE%" == "x86" (
-        if defined PROCESSOR_ARCHITEW6432 (
-            set CYGWIN_ARCH=64
-        ) else (
-            set CYGWIN_ARCH=32
-        )
-    ) else (
-        set CYGWIN_ARCH=64
-    )
-)
-
-:: download Cygwin 32 or 64 setup exe depending on detected architecture
-if "%CYGWIN_ARCH%" == "64" (
-    set CYGWIN_SETUP=setup-x86_64.exe
-) else (
-    set CYGWIN_SETUP=setup-x86.exe
-)
+:: download the last available version of Cygwin 32 
+set CYGWIN_SETUP=setup-2.924.x86.exe
 
 if exist "%INSTALL_TEMP%\%CYGWIN_SETUP%" (
     del "%INSTALL_TEMP%\%CYGWIN_SETUP%" || goto :fail
@@ -120,7 +100,7 @@ if "%INSTALL_LFTP4WIN_CORE%" == "yes" (
 echo Running Cygwin setup...
 echo.
 
-"%INSTALL_TEMP%\%CYGWIN_SETUP%" --no-admin ^
+"%INSTALL_TEMP%\%CYGWIN_SETUP%" --no-admin --allow-unsupported-windows option ^
  --site "%CYGWIN_MIRROR%" ^
  --root "%LFTP4WIN_ROOT%" ^
  --local-package-dir "%LFTP4WIN_ROOT%\.pkg-cache" ^
@@ -336,11 +316,7 @@ echo.
     echo.
     if "%INSTALL_LFTP4WIN_CORE%" == "yes" (
     echo if "%%TERMINAL%%" == "conemu" ^(
-         if "%CYGWIN_ARCH%" == "64" (
-             echo   start "" "%%LFTP4WIN_ROOT%%\applications\conemu\ConEmu64.exe" -cmd {Bash::bash}
-         ) else (
-             echo   start "" "%%LFTP4WIN_ROOT%%\applications\conemu\ConEmu.exe" -cmd {Bash::bash}
-         )
+         echo   start "" "%%LFTP4WIN_ROOT%%\applications\conemu\ConEmu.exe" -cmd {Bash::bash}
     echo ^)
     )
     echo.
