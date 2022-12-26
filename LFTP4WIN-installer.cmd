@@ -1,9 +1,14 @@
 @echo off
 ::
+:: Copyright 2022 by glodomorrapl
 :: Copyright 2019 by userdocs and contributors for LFTP4WIN installer derived from https://github.com/vegardit/cygwin-portable-installer
 :: Copyright 2017-2019 by Vegard IT GmbH (https://vegardit.com) and the cygwin-portable-installer contributors.
 ::
 :: SPDX-License-Identifier: Apache-2.0
+::
+:: LFTP4WIN-LEGACY installer derived from LFTP4WIN installer by userdocs
+:: @author glodomorrapl
+:: @contributors
 ::
 :: LFTPWIN installer derived from cygwin-portable-installer
 :: @author userdocs
@@ -15,7 +20,7 @@
 ::
 :: ABOUT
 :: =====
-:: LFTP4WIN installer
+:: LFTP4WIN-LEGACY installer is the modified version of the LFTP4WIN installer, adjusted for 32-bit support on older operating systems. Description below refers to the original project.
 ::
 :: A heavily modified and re-targeted version of this project https://github.com/vegardit/cygwin-portable-installer
 :: Original code has been 1: removed where not relevant 2: Modified to work with LFTP4WIN CORE 3: Unmodified where applicable.
@@ -137,90 +142,6 @@ if "%INSTALL_LFTP4WIN_CORE%" == "yes" (
     "%LFTP4WIN_ROOT%\bin\bsdtar.exe" -xmf "%INSTALL_TEMP%\lftp4win.zip" --strip-components=1 -C "%LFTP4WIN_BASE%\" || goto :fail
     "%LFTP4WIN_ROOT%\bin\touch.exe" "%LFTP4WIN_ROOT%\.core-installed"
 )
-
-set Updater_cmd=%LFTP4WIN_BASE%LFTP4WIN-updater.cmd
-echo.
-echo Creating updater [%Updater_cmd%]...
-echo.
-(
-    echo @echo off
-    echo setlocal enabledelayedexpansion
-    echo.
-    echo set LFTP4WIN_BASE=%%~dp0
-    echo set LFTP4WIN_ROOT=%%~dp0system
-    echo set INSTALL_TEMP=%%~dp0system\tmp
-    echo.
-    echo set CYGWIN_SETUP=%CYGWIN_SETUP%
-    echo set CORE_UPDATE=yes
-    echo set PATH=%%LFTP4WIN_ROOT%%\bin
-    echo set USERNAME=%LFTP4WIN_USERNAME%
-    echo set HOME=%%LFTP4WIN_BASE%%home
-    echo set GROUP=None
-    echo set GRP=
-    echo set SHELL=/bin/bash
-    echo echo.
-    echo set /p "REPLY=Update Cygwin? [y|n]: "
-    echo echo.
-    echo.
-    echo if "%%REPLY%%" == "y" ^(
-    echo     set /p "PACKETMANAGER=Open Cygwin packet manager? [y|n]: "
-    echo     echo.
-    echo ^)
-    echo.
-    echo if "%%PACKETMANAGER%%" == "y" ^(
-    echo     set PACKETMANAGER=--package-manager
-    echo ^)
-    echo.
-    echo if "%%REPLY%%" == "y" ^(
-    echo     echo ###########################################################
-    echo     echo # Updating Cygwin [LFTP4WIN Portable]...
-    echo     echo ###########################################################
-    echo     echo.
-    echo     echo Downloading Cygwin Setup and the core-update-requirements files...
-    echo.
-    echo     "%%LFTP4WIN_ROOT%%\bin\curl.exe" -sL "https://cygwin.org/%CYGWIN_SETUP%" ^> "%%LFTP4WIN_ROOT%%\tmp\%%CYGWIN_SETUP%%"
-    echo     "%%LFTP4WIN_ROOT%%\bin\curl.exe" -sL "https://raw.githubusercontent.com/userdocs/LFTP4WIN-CORE/master/system/.core-update-requirements" ^> "%%LFTP4WIN_ROOT%%\tmp\.core-update-requirements"
-    echo.
-    echo     set /p C_U_R=^<"%%LFTP4WIN_ROOT%%\tmp\.core-update-requirements"
-    echo.
-    echo     "%%LFTP4WIN_ROOT%%\tmp\%%CYGWIN_SETUP%%" --no-admin ^^
-    echo     --site %CYGWIN_MIRROR% ^^
-    echo     --root "%%LFTP4WIN_ROOT%%" ^^
-    echo     --local-package-dir "%%LFTP4WIN_ROOT%%\.pkg-cache" ^^
-    echo     --no-shortcuts ^^
-    echo     --no-desktop ^^
-    echo     --delete-orphans ^^
-    echo     --upgrade-also ^^
-    echo     --no-replaceonreboot ^^
-    echo     --quiet-mode ^^
-    echo     --packages ^!C_U_R^! %%PACKETMANAGER%% ^|^| goto :fail
-    if "%DELETE_CYGWIN_PACKAGE_CACHE%" == "yes" (
-        echo     rd /s /q "%%LFTP4WIN_ROOT%%\.pkg-cache"
-    )
-    echo     echo.
-    echo     del /q "%%INSTALL_TEMP%%\%%CYGWIN_SETUP%%" "%%LFTP4WIN_ROOT%%\Cygwin.bat" "%%LFTP4WIN_ROOT%%\Cygwin.ico" "%%LFTP4WIN_ROOT%%\Cygwin-Terminal.ico"
-    echo ^)
-    echo.
-    echo "%%LFTP4WIN_ROOT%%\bin\curl.exe" -sL "https://raw.githubusercontent.com/userdocs/LFTP4WIN/master/LFTP4WIN-installer.cmd" ^> "%%LFTP4WIN_BASE%%\LFTP4WIN-installer.cmd"
-    echo.
-    echo IF EXIST "%%LFTP4WIN_ROOT%%\portable-init.sh" "%%LFTP4WIN_ROOT%%\bin\bash" -li "%%LFTP4WIN_ROOT%%\portable-init.sh"
-    echo.
-    echo echo.
-    echo echo ###########################################################
-    echo echo # Updating [LFTP4WIN Portable] succeeded.
-    echo echo ###########################################################
-    echo echo.
-    echo pause
-    echo goto :eof
-    echo echo.
-    echo :fail
-    echo echo ###########################################################
-    echo echo # Updating [LFTP4WIN Portable] FAILED!
-    echo echo ###########################################################
-    echo echo.
-    echo pause
-    echo exit /1
-) > "%Updater_cmd%" || goto :fail
 
 set Init_sh=%LFTP4WIN_ROOT%\portable-init.sh
 echo Creating [%Init_sh%]...
