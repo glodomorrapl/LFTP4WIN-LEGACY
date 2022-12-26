@@ -4,7 +4,7 @@ This is a modified version of the original LFTP4WIN installer ([userdocs/LFTP4WI
 
 What's changed:
 - fixed support for 32-bit Windows due to cygwin sunsetting their 32-bit Windows support, removed support for 64-bit Windows
+- updater removed because cygwin is no longer getting package updates on 32-bit arch
 
 What's planned to change:
-- remove the updater (since 32-bit cygwin packages will no longer be updated anyway)
 - option to use curl instead of bitsadmin, which struggles with HTTPS transfers on older systems (or is outright non-functional/removed on modified versions of Windows)
